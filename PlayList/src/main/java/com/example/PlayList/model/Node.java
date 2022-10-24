@@ -7,8 +7,6 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table
-@Entity
 @Setter
 @Getter
 public class Node {

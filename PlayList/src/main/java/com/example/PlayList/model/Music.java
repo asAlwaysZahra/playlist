@@ -21,6 +21,7 @@ public class Music {
     private Date releaseDate;
     private String genre;
     private String topic;
+    private int len;
 
 }
 
