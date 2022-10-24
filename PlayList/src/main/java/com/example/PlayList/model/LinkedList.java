@@ -7,8 +7,6 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-@Table
-@Entity
 @Getter
 @Setter
 public class LinkedList {

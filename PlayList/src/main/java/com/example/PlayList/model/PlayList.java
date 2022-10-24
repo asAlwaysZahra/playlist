@@ -14,6 +14,11 @@ import java.util.Date;
 
 public class PlayList {
 
+    public PlayList()
+    {
+        playlist = new LinkedList();
+    }
+
     @Id
     private long id;
     private LinkedList playlist;
