@@ -16,8 +16,6 @@ public class PlayListService {
         playList.setPlaylist(newPlayList);
         playList.setSize(0);
 
-        CSV
-
         return playList;
     }
 
