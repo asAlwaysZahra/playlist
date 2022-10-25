@@ -72,7 +72,10 @@ public class PlayListService {
         }
     }
 
-    public List<Music> mergedPlayList(PlayList playList1, PlayList playList2) {
+    public List<Music> mergedPlayList(long playListId1, long playListId2) {
+
+        PlayList playList1 = playListRepository.findById(playListId1).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        PlayList playList2 = playListRepository.findById(playListId2).orElseThrow(() -> new RuntimeException("PlayList not found"));
 
         PlayList newPlayList = new PlayList();
 
@@ -92,10 +95,9 @@ public class PlayListService {
 
     }
 
-    public List<Music> shufflePlayList(PlayList playList) {
+    public List<Music> shufflePlayList(long playListId) {
 
-        PlayList shufflePlayList = new PlayList();
-        shufflePlayList.setId(playList.getId());
+        PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
 
         Music[] temp = new Music[playList.getSize()];
         int i = 0;
@@ -117,9 +119,9 @@ public class PlayListService {
         return playList.musicsList();
     }
 
-    public List<Music> shuffleMergePlayList(PlayList playList1, PlayList playList2) {
+    public List<Music> shuffleMergePlayList(long playListId1, long playListId2) {
 
-        List<Music> shuffleMergePlayList = mergedPlayList(playList1, playList2);
+        List<Music> shuffleMergePlayList = mergedPlayList(playListId1, playListId2);
         Collections.shuffle(shuffleMergePlayList);
 
         return shuffleMergePlayList;
