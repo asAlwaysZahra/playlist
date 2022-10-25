@@ -14,7 +14,6 @@ public class CSVFile {
 
     static public ArrayList<Music> readCSV(String fileName) {
 
-//        String fileName = "/media/influx/Programming/University/Fall01/DS/Codes/Projects/project-2-asAlwaysZahra/musics.csv";
         try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
             List<com.example.PlayList.file.Music> beans = new CsvToBeanBuilder(new FileReader(fileName)).withType(com.example.PlayList.file.Music.class).build().parse();
 
@@ -26,7 +25,7 @@ public class CSVFile {
                     i++;
                     continue;
                 }
-                musics.add(new Music(i++, t.getArtistName(), t.getTrackName(), Integer.parseInt(t.getReleaseDate()), t.getGenre(), Integer.parseInt(t.getLen()), t.getTopic()));
+                musics.add(new Music(i++ - 1, t.getArtistName(), t.getTrackName(), Integer.parseInt(t.getReleaseDate()), t.getGenre(), Integer.parseInt(t.getLen()), t.getTopic()));
             }
 
             return musics;
