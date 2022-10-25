@@ -3,10 +3,7 @@ package com.example.PlayList.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +14,14 @@ import java.util.List;
 public class PlayList {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Transient
     private LinkedList playlist;
     private int size;
+    
+    @Column(unique=true)
+    private String name;
 
     public PlayList() {
         playlist = new LinkedList();
