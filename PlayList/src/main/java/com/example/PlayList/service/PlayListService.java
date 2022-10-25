@@ -11,6 +11,16 @@ import java.util.Random;
 @Service
 public class PlayListService {
 
+    static void arrayShuffle(Music[] arr) {
+        Random rand = new Random();
+        for (int i = 0; i < arr.length; i++) {
+            int index = rand.nextInt(arr.length);
+            Music g = arr[index];
+            arr[index] = arr[i];
+            arr[i] = g;
+        }
+    }
+
     public PlayList clearPlayList(PlayList playList) {
         LinkedList newPlayList = new LinkedList();
         playList.setPlaylist(newPlayList);
@@ -70,16 +80,5 @@ public class PlayListService {
         shuffleMergePlayList = shufflePlayList(shuffleMergePlayList);
 
         return playList1;
-    }
-
-    static void arrayShuffle(Music[] arr)
-    {
-        Random rand = new Random();
-        for (int i = 0; i < arr.length; i++) {
-            int index = rand.nextInt(arr.length);
-            Music g = arr[index];
-            arr[index] = arr[i];
-            arr[i] = g;
-        }
     }
 }

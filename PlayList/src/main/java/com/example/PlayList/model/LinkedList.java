@@ -1,14 +1,12 @@
 package com.example.PlayList.model;
 
-import lombok.*;
-import javax.persistence.*;
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
 @AllArgsConstructor
-@Getter
-@Setter
 public class LinkedList {
     private Node header;
     private Node trailer;

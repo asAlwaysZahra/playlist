@@ -1,7 +1,13 @@
 package com.example.PlayList.model;
 
-import lombok.*;
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Data
 @Builder
@@ -9,8 +15,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table
 @Entity
-@Getter
-@Setter
 public class Music {
 
     @Id
