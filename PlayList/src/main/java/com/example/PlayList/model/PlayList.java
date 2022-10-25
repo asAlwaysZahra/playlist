@@ -1,26 +1,26 @@
 package com.example.PlayList.model;
 
-import lombok.*;
-import javax.persistence.*;
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Data
-@Builder
 @AllArgsConstructor
 @Table
 @Entity
-@Getter
-@Setter
-
 public class PlayList {
-
-    public PlayList()
-    {
-        playlist = new LinkedList();
-    }
 
     @Id
     private long id;
+    @Transient
     private LinkedList playlist;
     private int size;
+
+    public PlayList() {
+        playlist = new LinkedList();
+    }
 }
