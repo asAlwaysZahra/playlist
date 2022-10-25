@@ -4,14 +4,65 @@ import com.example.PlayList.model.LinkedList;
 import com.example.PlayList.model.Music;
 import com.example.PlayList.model.Node;
 import com.example.PlayList.model.PlayList;
+import com.example.PlayList.reposirory.MusicRepository;
+import com.example.PlayList.reposirory.PlayListRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
 public class PlayListService {
 
-    static void arrayShuffle(Music[] arr) {
+    @Autowired
+    private PlayListRepository playListRepository;
+    @Autowired
+    private MusicRepository musicRepository;
+
+    public PlayList createPlayList(PlayList playList) {
+        return playListRepository.save(playList);
+    }
+
+    public PlayList getPlayListById(long id) {
+        return playListRepository.findById(id).orElseThrow(() -> new RuntimeException("PlayList not found"));
+    }
+
+    public PlayList updatePlayList(PlayList playList) {
+        return playListRepository.save(playList);
+    }
+
+    public void deletePlayList(long id) {
+        playListRepository.deleteById(id);
+    }
+
+    public List<PlayList> getAllPlayList() {
+        return (List<PlayList>) playListRepository.findAll();
+    }
+
+    public PlayList getPlayListByName(String name) {
+        return playListRepository.findByName(name);
+    }
+
+    // methods ---------------------------------------------------------------------
+
+    public PlayList addMusicToPlayList(long playListId, long musicId) {
+        PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
+        playList.getPlaylist().addLast(music);
+        playList.setSize(playList.getSize() + 1);
+        return playList;
+    }
+
+    public PlayList removeMusicFromPlayList(long playListId, long musicId) {
+        PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
+//        playList.getPlaylist().remove(music); todo
+        playList.setSize(playList.getSize() - 1);
+        return playList;
+    }
+
+    private void arrayShuffle(Music[] arr) {
         Random rand = new Random();
         for (int i = 0; i < arr.length; i++) {
             int index = rand.nextInt(arr.length);
