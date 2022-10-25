@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +25,23 @@ public class PlayList {
     public PlayList() {
         playlist = new LinkedList();
     }
+
+    public List<Music> musicsList() {
+
+        List<Music> musics = new ArrayList<>();
+        Node t = playlist.getHeader().getNext();
+        while (t != playlist.getTrailer()) {
+            musics.add(t.getData());
+        }
+
+        return musics;
+    }
+
+    public void clearPlayList() {
+
+        LinkedList newPlayList = new LinkedList();
+        this.setPlaylist(newPlayList);
+        this.setSize(0);
+    }
+
 }

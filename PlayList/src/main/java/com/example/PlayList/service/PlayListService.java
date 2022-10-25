@@ -6,12 +6,13 @@ import com.example.PlayList.model.Node;
 import com.example.PlayList.model.PlayList;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PlayListService {
 
-    static void arrayShuffle(Music[] arr) {
+    private void arrayShuffle(Music[] arr) {
         Random rand = new Random();
         for (int i = 0; i < arr.length; i++) {
             int index = rand.nextInt(arr.length);
@@ -21,35 +22,27 @@ public class PlayListService {
         }
     }
 
-    public PlayList clearPlayList(PlayList playList) {
-        LinkedList newPlayList = new LinkedList();
-        playList.setPlaylist(newPlayList);
-        playList.setSize(0);
+    public List<Music> mergedPlayList(PlayList playList1, PlayList playList2) {
 
-        return playList;
-    }
+        PlayList newPlayList = new PlayList();
 
-    public PlayList mergedPlayList(int id, PlayList playList1, PlayList playList2) {
-
-        PlayList mergedPlayList = new PlayList();
-        mergedPlayList.setId(id);
-
-        mergedPlayList.getPlaylist().getHeader().setNext(playList1.getPlaylist().getHeader().getNext());
-        playList1.getPlaylist().getHeader().getNext().setPrevious(mergedPlayList.getPlaylist().getHeader());
+        newPlayList.getPlaylist().getHeader().setNext(playList1.getPlaylist().getHeader().getNext());
+        playList1.getPlaylist().getHeader().getNext().setPrevious(newPlayList.getPlaylist().getHeader());
 
         playList1.getPlaylist().getTrailer().getPrevious().setNext(playList2.getPlaylist().getHeader().getNext());
         playList2.getPlaylist().getHeader().getNext().setPrevious(playList1.getPlaylist().getTrailer().getPrevious());
 
-        mergedPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
-        playList2.getPlaylist().getTrailer().getPrevious().setNext(mergedPlayList.getPlaylist().getTrailer());
+        newPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
+        playList2.getPlaylist().getTrailer().getPrevious().setNext(newPlayList.getPlaylist().getTrailer());
 
-        mergedPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
-        mergedPlayList.getPlaylist().setSize(playList1.getPlaylist().getSize() + playList2.getPlaylist().getSize());
+        newPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
+        newPlayList.getPlaylist().setSize(playList1.getPlaylist().getSize() + playList2.getPlaylist().getSize());
 
-        return mergedPlayList;
+        return newPlayList.musicsList().stream().distinct().toList();
+
     }
 
-    public PlayList shufflePlayList(PlayList playList) {
+    public List<Music> shufflePlayList(PlayList playList) {
 
         PlayList shufflePlayList = new PlayList();
         shufflePlayList.setId(playList.getId());
@@ -65,20 +58,20 @@ public class PlayListService {
 
         arrayShuffle(temp);
 
-        playList = clearPlayList(playList);
+        playList.clearPlayList();
 
         for (Music music : temp) {
             playList.getPlaylist().addLast(music);
         }
 
-        return playList;
+        return playList.musicsList();
     }
 
-    public PlayList shuffleMergePlayList(int id, PlayList playList1, PlayList playList2) {
+    public List<Music> shuffleMergePlayList(PlayList playList1, PlayList playList2) {
 
-        PlayList shuffleMergePlayList = mergedPlayList(id, playList1, playList2);
-        shuffleMergePlayList = shufflePlayList(shuffleMergePlayList);
+        List<Music> shuffleMergePlayList = mergedPlayList(playList1, playList2);
+        Collections.shuffle(shuffleMergePlayList);
 
-        return playList1;
+        return shuffleMergePlayList;
     }
 }
