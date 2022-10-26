@@ -1,34 +1,40 @@
 package com.example.PlayList.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table
 @Entity
+@Getter
+@Setter
 public class PlayList {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "playlist_id")
     private long id;
     @Transient
     private LinkedList playlist;
     private int size;
-    
-    @Column(unique=true)
-    private String name;
 
     @Column(unique = true)
     private String name;
 
-    public PlayList() {
-        playlist = new LinkedList();
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "playlist_music",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "music_id")
+    )
+    private Set<Music> musics;
 
     public List<Music> musicsList() {
 

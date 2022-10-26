@@ -25,7 +25,16 @@ public class CSVFile {
                     i++;
                     continue;
                 }
-                musics.add(new Music(i++ - 1, t.getArtistName(), t.getTrackName(), Integer.parseInt(t.getReleaseDate()), t.getGenre(), Integer.parseInt(t.getLen()), t.getTopic()));
+                musics.add(Music.builder()
+                        .id(i++)
+                        .artistName(t.getArtistName())
+                        .trackName(t.getTrackName())
+                        .releaseDate(Integer.parseInt(t.getReleaseDate()))
+                        .genre(t.getGenre())
+                        .len(Integer.parseInt(t.getLen()))
+                        .topic(t.getTopic())
+                        .build());
+//                new Music(i++ - 1, t.getArtistName(), t.getTrackName(), Integer.parseInt(t.getReleaseDate()), t.getGenre(), Integer.parseInt(t.getLen()), t.getTopic());
             }
 
             return musics;

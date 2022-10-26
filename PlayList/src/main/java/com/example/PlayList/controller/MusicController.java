@@ -1,5 +1,6 @@
 package com.example.PlayList.controller;
 
+import com.example.PlayList.file.CSVFile;
 import com.example.PlayList.model.Music;
 import com.example.PlayList.service.MusicService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,12 @@ public class MusicController {
     public ResponseEntity<Void> deleteMusic(@PathVariable long id) {
         musicService.deleteMusic(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/readCSV")
+    public ResponseEntity<List<Music>> readCSV() {
+        List<Music> musicList = CSVFile.readCSV("src/main/resources/musics.csv");
+        return new ResponseEntity<>(musicService.saveAll(musicList), HttpStatus.CREATED);
     }
 
     // filter ---------------------------------------------------------------------

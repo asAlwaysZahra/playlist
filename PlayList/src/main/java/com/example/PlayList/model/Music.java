@@ -1,22 +1,22 @@
 package com.example.PlayList.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table
 @Entity
+@Getter
+@Setter
 public class Music {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "music_id")
     private long id;
 
     private String artistName;
@@ -26,5 +26,7 @@ public class Music {
     private int len;
     private String topic;
 
+    @ManyToMany(mappedBy = "musics")
+    Set<PlayList> playLists;
 }
 

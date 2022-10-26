@@ -18,7 +18,12 @@ public class PlayListController {
 
     @PostMapping("/new")
     public ResponseEntity<PlayList> createPlayList(@RequestBody PlayList playList) {
-        return new ResponseEntity<>(playListService.createPlayList(playList), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(playListService.createPlayList(playList), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            // todo logger
+        }
     }
 
     @GetMapping("/{id}")
@@ -53,16 +58,17 @@ public class PlayListController {
 
     // methods ---------------------------------------------------------------------
 
-    @GetMapping("/add/{id}/{musicId}")
+    @PostMapping("/add/{id}/{musicId}")
     public ResponseEntity<PlayList> addMusicToPlayList(@PathVariable long id, @PathVariable long musicId) {
         try {
             return new ResponseEntity<>(playListService.addMusicToPlayList(id, musicId), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/remove/{id}/{musicId}")
+    @DeleteMapping("/remove/{id}/{musicId}")
     public ResponseEntity<PlayList> removeMusicFromPlayList(@PathVariable long id, @PathVariable long musicId) {
         try {
             return new ResponseEntity<>(playListService.removeMusicFromPlayList(id, musicId), HttpStatus.OK);

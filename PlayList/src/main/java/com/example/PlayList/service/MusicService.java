@@ -17,7 +17,16 @@ public class MusicService {
         return musicRepository.save(music);
     }
 
-    public Music getMusicById(long id) {return musicRepository.findById(id).orElseThrow(() -> new RuntimeException("Music not found"));}
+    public List<Music> saveAll(List<Music> musicList) {
+        for (Music music : musicList)
+            createMusic(music);
+
+        return musicList;
+    }
+
+    public Music getMusicById(long id) {
+        return musicRepository.findById(id).orElseThrow(() -> new RuntimeException("Music not found"));
+    }
 
     public Music updateMusic(Music music) {
         return musicRepository.save(music);
