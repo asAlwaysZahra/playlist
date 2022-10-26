@@ -53,7 +53,7 @@ public class LinkedList {
         addBetween(value, trailer.getPrevious(), trailer);
     }
 
-    private Music remove(Node node) {
+    public Music remove(Node node) {
         Node before = node.getPrevious();
         Node after = node.getNext();
         before.setNext(after);
