@@ -39,6 +39,15 @@ public class PlayList {
         return musics;
     }
 
+    public void removeMusic(Music music)
+    {
+        Node t = playlist.getHeader().getNext();
+        while(t != playlist.getTrailer())
+        {
+            if(t.getData().getId() == music.getId())
+                playlist.remove(t);
+        }
+    }
     public void clearPlayList() {
 
         LinkedList newPlayList = new LinkedList();

@@ -40,6 +40,7 @@ public class PlayListService {
 
         playList.setPlaylist(new LinkedList());
         List<Music> musicList = playlist_musicRepo.getMusics(id);
+        playList.setSize(musicList.size());
 
         for (Music music : musicList)
             playList.getPlaylist().addLast(music);
@@ -70,14 +71,14 @@ public class PlayListService {
     // methods ---------------------------------------------------------------------
 
     public PlayList addMusicToPlayList(long playListId, long musicId) {
+                            // getPlayListById(playListId)  todo  ?
         PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
 
         Playlist_Music playlist_music = new Playlist_Music(playListId, musicId);
         playlist_musicRepo.save(playlist_music);
 
-//        if (playList.getPlaylist() == null) playList.setPlaylist(new LinkedList());
-//        playList.getPlaylist().addLast(music); todo
+        playList.getPlaylist().addLast(music);
 
         playList.setSize(playList.getSize() + 1);
         playListRepository.save(playList);
@@ -86,11 +87,12 @@ public class PlayListService {
     }
 
     public PlayList removeMusicFromPlayList(long playListId, long musicId) {
+                            // getPlayListById(playListId)  todo  ?
         PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
 
         playlist_musicRepo.removePM(playListId, musicId);
-        // todo
+        playList.removeMusic(music);
 
         playList.setSize(playList.getSize() - 1);
         playListRepository.save(playList);
@@ -129,17 +131,32 @@ public class PlayListService {
         newPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
         newPlayList.getPlaylist().setSize(playList1.getPlaylist().getSize() + playList2.getPlaylist().getSize());
 
+        Node t1 = newPlayList.getPlaylist().getHeader().getNext();
+
+        while (t1 != newPlayList.getPlaylist().getTrailer()) {
+            Node t2 = t1.getNext();
+            while (t2 != newPlayList.getPlaylist().getTrailer()) {
+                if (t1.getData().getId() == t2.getData().getId()) {
+                    newPlayList.getPlaylist().remove(t2);
+                }
+                t2 = t2.getNext();
+            }
+            t1 = t1.getNext();
+        }
+
         playListRepository.save(newPlayList);
 
-        return newPlayList.musicsList().stream().distinct().toList(); // todo
+        return newPlayList.musicsList();
 
     }
 
     public List<Music> shufflePlayList(long playListId) {
 
-        PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        PlayList playList = getPlayListById(playListId); //playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        //todo
+        //exception out of bound :////
 
-        Music[] temp = new Music[playList.getSize()];
+        Music[] temp = new Music[playList.getPlaylist().size()];
         int i = 0;
         Node current = playList.getPlaylist().getHeader().getNext();
         while (current != playList.getPlaylist().getTrailer()) {
