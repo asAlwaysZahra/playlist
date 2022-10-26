@@ -1,16 +1,13 @@
 package com.example.PlayList.service;
 
-import com.example.PlayList.model.LinkedList;
-import com.example.PlayList.model.Music;
-import com.example.PlayList.model.Node;
-import com.example.PlayList.model.PlayList;
+import com.example.PlayList.model.*;
 import com.example.PlayList.reposirory.MusicRepository;
 import com.example.PlayList.reposirory.PlayListRepository;
+import com.example.PlayList.reposirory.Playlist_MusicRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -21,10 +18,16 @@ public class PlayListService {
     private PlayListRepository playListRepository;
     @Autowired
     private MusicRepository musicRepository;
+    @Autowired
+    private Playlist_MusicRepo playlist_musicRepo;
 
     public long generateId() {
         List<PlayList> playLists = (List<PlayList>) playListRepository.findAll();
         return playLists.size() + 1;
+    }
+
+    public List<Music> getMusics(long id) {
+        return playlist_musicRepo.getMusics(id);
     }
 
     public PlayList createPlayList(PlayList playList) {
@@ -35,10 +38,20 @@ public class PlayListService {
     public PlayList getPlayListById(long id) {
         PlayList playList = playListRepository.findById(id).orElseThrow(() -> new RuntimeException("PlayList not found"));
 
+        playList.setPlaylist(new LinkedList());
+        List<Music> musicList = playlist_musicRepo.getMusics(id);
+
+        for (Music music : musicList)
+            playList.getPlaylist().addLast(music);
+
         return playList;
     }
 
-    public PlayList updatePlayList(PlayList playList) {
+    public PlayList updatePlayList(long id, PlayList playList) {
+        PlayList p = playListRepository.findById(id).orElseThrow(() -> new RuntimeException("PlayList not found"));
+
+        p.setName(playList.getName());
+
         return playListRepository.save(playList);
     }
 
@@ -59,16 +72,16 @@ public class PlayListService {
     public PlayList addMusicToPlayList(long playListId, long musicId) {
         PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
-        System.err.println(playList);
-        System.err.println(music);
-        if (playList.getMusics().contains(music))
-            throw new RuntimeException("Music already exists in PlayList");
 
+        Playlist_Music playlist_music = new Playlist_Music(playListId, musicId);
+        playlist_musicRepo.save(playlist_music);
+
+//        if (playList.getPlaylist() == null) playList.setPlaylist(new LinkedList());
 //        playList.getPlaylist().addLast(music); todo
-        playList.setMusics(new HashSet<>());
-        playList.getMusics().add(music);
+
         playList.setSize(playList.getSize() + 1);
         playListRepository.save(playList);
+
         return playList;
     }
 
@@ -76,15 +89,12 @@ public class PlayListService {
         PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
 
-        if (!playList.getMusics().contains(music))
-            throw new RuntimeException("Music not found in PlayList");
+        playlist_musicRepo.removePM(playListId, musicId);
+        // todo
 
-//            playList.getPlaylist().remove(music); todo
-        playList.setMusics(new HashSet<>());
-        music.getPlayLists().remove(playList);
-        playList.getMusics().remove(music);
         playList.setSize(playList.getSize() - 1);
         playListRepository.save(playList);
+
         return playList;
     }
 
@@ -98,13 +108,14 @@ public class PlayListService {
         }
     }
 
-    public List<Music> mergedPlayList(long playListId1, long playListId2) {
+    public List<Music> mergedPlayList(long playListId1, long playListId2, String newName) {
 
-        PlayList playList1 = playListRepository.findById(playListId1).orElseThrow(() -> new RuntimeException("PlayList not found"));
-        PlayList playList2 = playListRepository.findById(playListId2).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        PlayList playList1 = getPlayListById(playListId1);
+        PlayList playList2 = getPlayListById(playListId2);
 
         PlayList newPlayList = new PlayList();
         newPlayList.setPlaylist(new LinkedList());
+        newPlayList.setName(newName);
 
         newPlayList.getPlaylist().getHeader().setNext(playList1.getPlaylist().getHeader().getNext());
         playList1.getPlaylist().getHeader().getNext().setPrevious(newPlayList.getPlaylist().getHeader());
@@ -118,7 +129,9 @@ public class PlayListService {
         newPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
         newPlayList.getPlaylist().setSize(playList1.getPlaylist().getSize() + playList2.getPlaylist().getSize());
 
-        return newPlayList.musicsList().stream().distinct().toList();
+        playListRepository.save(newPlayList);
+
+        return newPlayList.musicsList().stream().distinct().toList(); // todo
 
     }
 
@@ -146,9 +159,9 @@ public class PlayListService {
         return playList.musicsList();
     }
 
-    public List<Music> shuffleMergePlayList(long playListId1, long playListId2) {
+    public List<Music> shuffleMergePlayList(long playListId1, long playListId2, String newName) {
 
-        List<Music> shuffleMergePlayList = mergedPlayList(playListId1, playListId2);
+        List<Music> shuffleMergePlayList = mergedPlayList(playListId1, playListId2, newName);
         Collections.shuffle(shuffleMergePlayList);
 
         return shuffleMergePlayList;

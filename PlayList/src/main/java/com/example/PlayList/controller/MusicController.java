@@ -38,8 +38,8 @@ public class MusicController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Music> updateMusic(@RequestBody Music music) {
-        return new ResponseEntity<>(musicService.updateMusic(music), HttpStatus.OK);
+    public ResponseEntity<Music> updateMusic(@PathVariable long id, @RequestBody Music music) {
+        return new ResponseEntity<>(musicService.updateMusic(id, music), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")

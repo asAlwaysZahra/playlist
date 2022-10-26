@@ -1,6 +1,7 @@
 package com.example.PlayList.service;
 
 import com.example.PlayList.model.Music;
+import com.example.PlayList.model.PlayList;
 import com.example.PlayList.reposirory.MusicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,13 @@ public class MusicService {
     @Autowired
     private MusicRepository musicRepository;
 
+    public long generateId() {
+        List<Music> musicList = (List<Music>) musicRepository.findAll();
+        return musicList.size() + 1;
+    }
+
     public Music createMusic(Music music) {
+        music.setId(generateId());
         return musicRepository.save(music);
     }
 
@@ -28,8 +35,17 @@ public class MusicService {
         return musicRepository.findById(id).orElseThrow(() -> new RuntimeException("Music not found"));
     }
 
-    public Music updateMusic(Music music) {
-        return musicRepository.save(music);
+    public Music updateMusic(long id, Music music) {
+        Music m = musicRepository.findById(id).orElseThrow(() -> new RuntimeException("Music not found"));
+
+        m.setLen(music.getLen());
+        m.setTrackName(music.getTrackName());
+        m.setArtistName(music.getArtistName());
+        m.setGenre(music.getGenre());
+        m.setTopic(music.getTopic());
+        m.setReleaseDate(music.getReleaseDate());
+
+        return musicRepository.save(m);
     }
 
     public void deleteMusic(long id) {

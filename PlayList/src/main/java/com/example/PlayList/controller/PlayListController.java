@@ -1,5 +1,6 @@
 package com.example.PlayList.controller;
 
+import com.example.PlayList.model.Music;
 import com.example.PlayList.model.PlayList;
 import com.example.PlayList.service.PlayListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class PlayListController {
         try {
             return new ResponseEntity<>(playListService.getPlayListById(id), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -41,8 +43,8 @@ public class PlayListController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<PlayList> updatePlayList(@RequestBody PlayList playList) {
-        return new ResponseEntity<>(playListService.updatePlayList(playList), HttpStatus.OK);
+    public ResponseEntity<PlayList> updatePlayList(@PathVariable long id, @RequestBody PlayList playList) {
+        return new ResponseEntity<>(playListService.updatePlayList(id, playList), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")
@@ -56,6 +58,11 @@ public class PlayListController {
         return new ResponseEntity<>(playListService.getPlayListByName(name), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/musics")
+    public ResponseEntity<List<Music>> getMusics(@PathVariable long id) {
+        return new ResponseEntity<>(playListService.getMusics(id), HttpStatus.OK);
+    }
+
     // methods ---------------------------------------------------------------------
 
     @PostMapping("/add/{id}/{musicId}")
@@ -63,7 +70,6 @@ public class PlayListController {
         try {
             return new ResponseEntity<>(playListService.addMusicToPlayList(id, musicId), HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -73,13 +79,29 @@ public class PlayListController {
         try {
             return new ResponseEntity<>(playListService.removeMusicFromPlayList(id, musicId), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/shuffle/{id}")
-    public ResponseEntity<PlayList> shufflePlayList(@PathVariable long id) {
-        return null; // todo
+    public ResponseEntity<List<Music>> shufflePlayList(@PathVariable long id) {
+        try {
+            return new ResponseEntity<>(playListService.shufflePlayList(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/merge/{id1}/{id2}/{name}")
+    public ResponseEntity<List<Music>> mergePlayList(@PathVariable long id1, @PathVariable long id2, @PathVariable String name) {
+        try {
+            return new ResponseEntity<>(playListService.mergedPlayList(id1, id2, name), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }
