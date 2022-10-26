@@ -13,7 +13,7 @@ public class LinkedList {
 
     public LinkedList() {
         this.header = new Node(null, null, null);
-        this.trailer = new Node(null, header, null);
+        this.trailer = new Node(null, null, header);
         header.setNext(trailer);
         this.size = 0;
     }

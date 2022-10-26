@@ -28,14 +28,6 @@ public class PlayList {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "playlist_music",
-            joinColumns = @JoinColumn(name = "playlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "music_id")
-    )
-    private Set<Music> musics;
-
     public List<Music> musicsList() {
 
         List<Music> musics = new ArrayList<>();

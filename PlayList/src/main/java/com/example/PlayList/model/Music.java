@@ -15,7 +15,6 @@ import java.util.Set;
 public class Music {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "music_id")
     private long id;
 
@@ -25,8 +24,5 @@ public class Music {
     private String genre;
     private int len;
     private String topic;
-
-    @ManyToMany(mappedBy = "musics")
-    Set<PlayList> playLists;
 }
 
