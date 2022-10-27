@@ -1,5 +1,6 @@
 package com.example.PlayList.model;
 
+import com.example.PlayList.model.request.MusicRequest;
 import com.example.PlayList.model.response.MusicResponse;
 import lombok.*;
 
@@ -28,6 +29,18 @@ public class Music {
 
     public MusicResponse response() {
         return MusicResponse.builder()
+                .id(id)
+                .artistName(artistName)
+                .trackName(trackName)
+                .releaseDate(releaseDate)
+                .genre(genre)
+                .len(len)
+                .topic(topic)
+                .build();
+    }
+
+    public MusicRequest request(){
+        return MusicRequest.builder()
                 .artistName(artistName)
                 .trackName(trackName)
                 .releaseDate(releaseDate)

@@ -2,6 +2,7 @@ package com.example.PlayList.controller;
 
 import com.example.PlayList.file.CSVFile;
 import com.example.PlayList.model.Music;
+import com.example.PlayList.model.request.MusicRequest;
 import com.example.PlayList.model.response.MusicResponse;
 import com.example.PlayList.service.MusicService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class MusicController {
     private MusicService musicService;
 
     @PostMapping("/new")
-    public ResponseEntity<MusicResponse> createMusic(@RequestBody Music music) {
-        return new ResponseEntity<>(musicService.createMusic(music), HttpStatus.OK);
+    public ResponseEntity<MusicResponse> createMusic(@RequestBody MusicRequest musicRequest) {
+        return new ResponseEntity<>(musicService.createMusic(musicRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -39,8 +40,8 @@ public class MusicController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<MusicResponse> updateMusic(@PathVariable long id, @RequestBody Music music) {
-        return new ResponseEntity<>(musicService.updateMusic(id, music), HttpStatus.OK);
+    public ResponseEntity<MusicResponse> updateMusic(@PathVariable long id, @RequestBody MusicRequest musicRequest) {
+        return new ResponseEntity<>(musicService.updateMusic(id, musicRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")
@@ -51,7 +52,7 @@ public class MusicController {
 
     @PostMapping("/readCSV")
     public ResponseEntity<List<MusicResponse>> readCSV() {
-        List<Music> musicList = CSVFile.readCSV("/media/influx/Programming/University/Fall01/DS/Codes/Projects/project-2-asAlwaysZahra/PlayList/src/main/resources/musics.csv");
+        List<MusicRequest> musicList = CSVFile.readCSV("/media/influx/Programming/University/Fall01/DS/Codes/Projects/project-2-asAlwaysZahra/PlayList/src/main/resources/musics.csv");
         return new ResponseEntity<>(musicService.saveAll(musicList), HttpStatus.CREATED);
     }
 
