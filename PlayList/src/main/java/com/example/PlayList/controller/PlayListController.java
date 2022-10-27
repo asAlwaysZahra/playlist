@@ -1,8 +1,7 @@
 package com.example.PlayList.controller;
 
 import com.example.PlayList.model.Music;
-import com.example.PlayList.model.PlayList;
-import com.example.PlayList.model.response.MusicResponse;
+import com.example.PlayList.model.*;
 import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.service.PlayListService;
 import lombok.AllArgsConstructor;
@@ -21,9 +20,9 @@ public class PlayListController {
     private PlayListService playListService;
 
     @PostMapping("/new")
-    public ResponseEntity<PlayListResponse> createPlayList(@RequestBody PlayList playList) {
+    public ResponseEntity<PlayListResponse> createPlayList(@RequestBody PlayListRequest playListRequest) {
         try {
-            return new ResponseEntity<>(playListService.createPlayList(playList), HttpStatus.CREATED);
+            return new ResponseEntity<>(playListService.createPlayList(playListRequest), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             // todo logger
@@ -46,8 +45,8 @@ public class PlayListController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<PlayListResponse> updatePlayList(@PathVariable long id, @RequestBody PlayList playList) {
-        return new ResponseEntity<>(playListService.updatePlayList(id, playList), HttpStatus.OK);
+    public ResponseEntity<PlayListResponse> updatePlayList(@PathVariable long id, @RequestBody PlayListRequest playListRequest) {
+        return new ResponseEntity<>(playListService.updatePlayList(id, playListRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/remove/{id}")

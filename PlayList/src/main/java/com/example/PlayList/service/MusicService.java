@@ -2,11 +2,13 @@ package com.example.PlayList.service;
 
 import com.example.PlayList.model.Music;
 import com.example.PlayList.model.PlayList;
+import com.example.PlayList.model.request.MusicRequest;
 import com.example.PlayList.model.response.MusicResponse;
 import com.example.PlayList.reposirory.MusicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,31 +23,41 @@ public class MusicService {
         return musicList.size() + 1;
     }
 
-    public MusicResponse createMusic(Music music) {
-        music.setId(generateId());
+    public MusicResponse createMusic(MusicRequest musicRequest) {
+        Music music = Music.builder()
+                .id(generateId())
+                .artistName(musicRequest.getArtistName())
+                .trackName(musicRequest.getTrackName())
+                .genre(musicRequest.getGenre())
+                .len(musicRequest.getLen())
+                .releaseDate(musicRequest.getReleaseDate())
+                .topic(musicRequest.getTopic())
+                .build();
         return musicRepository.save(music).response();
     }
 
-    public List<MusicResponse> saveAll(List<Music> musicList) {
-        for (Music music : musicList)
-            createMusic(music);
+    public List<MusicResponse> saveAll(List<MusicRequest> musicList) {
+        ArrayList<MusicResponse> musicResponses = new ArrayList<>();
 
-        return musicList.stream().map(Music::response).collect(Collectors.toList());
+        for (MusicRequest music : musicList)
+            musicResponses.add(createMusic(music));
+
+        return musicResponses;
     }
 
     public MusicResponse getMusicById(long id) {
         return musicRepository.findById(id).orElseThrow(() -> new RuntimeException("Music not found")).response();
     }
 
-    public MusicResponse updateMusic(long id, Music music) {
+    public MusicResponse updateMusic(long id, MusicRequest musicRequest) {
         Music m = musicRepository.findById(id).orElseThrow(() -> new RuntimeException("Music not found"));
 
-        m.setLen(music.getLen());
-        m.setTrackName(music.getTrackName());
-        m.setArtistName(music.getArtistName());
-        m.setGenre(music.getGenre());
-        m.setTopic(music.getTopic());
-        m.setReleaseDate(music.getReleaseDate());
+        if(musicRequest.getArtistName() != null) m.setArtistName(musicRequest.getArtistName());
+        if(m.getLen() != 0) m.setLen(musicRequest.getLen());
+        if(musicRequest.getTrackName() != null) m.setTrackName(musicRequest.getTrackName());
+        if(musicRequest.getGenre() != null) m.setGenre(musicRequest.getGenre());
+        if(musicRequest.getTopic() != null) m.setTopic(musicRequest.getTopic());
+        if(musicRequest.getReleaseDate() != 0) m.setReleaseDate(musicRequest.getReleaseDate());
 
         return musicRepository.save(m).response();
     }
