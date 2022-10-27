@@ -39,7 +39,7 @@ public class LinkedList {
     }
 
     private void addBetween(Music value, Node before, Node after) {
-        Node newNode = new Node(value, before, after);
+        Node newNode = new Node(value, after, before);
         before.setNext(newNode);
         after.setPrevious(newNode);
         size++;

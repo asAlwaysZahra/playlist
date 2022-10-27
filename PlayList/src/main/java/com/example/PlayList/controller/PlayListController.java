@@ -94,10 +94,20 @@ public class PlayListController {
         }
     }
 
-    @GetMapping("/merge/{id1}/{id2}/{name}")
+    @PostMapping("/merge/{id1}/{id2}/{name}")
     public ResponseEntity<List<Music>> mergePlayList(@PathVariable long id1, @PathVariable long id2, @PathVariable String name) {
         try {
             return new ResponseEntity<>(playListService.mergedPlayList(id1, id2, name), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/merge/shuffle/{id1}/{id2}/{name}")
+    public ResponseEntity<List<Music>> mergeShufflePlayList(@PathVariable long id1, @PathVariable long id2, @PathVariable String name) {
+        try {
+            return new ResponseEntity<>(playListService.shuffleMergePlayList(id1, id2, name), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
