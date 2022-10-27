@@ -87,8 +87,8 @@ public class PlayListService {
     }
 
     public PlayList removeMusicFromPlayList(long playListId, long musicId) {
-                            // getPlayListById(playListId)  todo  ?
-        PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+
+        PlayList playList = getPlayListById(playListId);
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
 
         playlist_musicRepo.removePM(playListId, musicId);
@@ -118,6 +118,7 @@ public class PlayListService {
         PlayList newPlayList = new PlayList();
         newPlayList.setPlaylist(new LinkedList());
         newPlayList.setName(newName);
+        newPlayList.setId(generateId());
 
         newPlayList.getPlaylist().getHeader().setNext(playList1.getPlaylist().getHeader().getNext());
         playList1.getPlaylist().getHeader().getNext().setPrevious(newPlayList.getPlaylist().getHeader());
@@ -129,7 +130,9 @@ public class PlayListService {
         playList2.getPlaylist().getTrailer().getPrevious().setNext(newPlayList.getPlaylist().getTrailer());
 
         newPlayList.getPlaylist().getTrailer().setPrevious(playList2.getPlaylist().getTrailer().getPrevious());
+
         newPlayList.getPlaylist().setSize(playList1.getPlaylist().getSize() + playList2.getPlaylist().getSize());
+        newPlayList.setSize(newPlayList.getPlaylist().getSize());
 
         Node t1 = newPlayList.getPlaylist().getHeader().getNext();
 
@@ -153,8 +156,6 @@ public class PlayListService {
     public List<Music> shufflePlayList(long playListId) {
 
         PlayList playList = getPlayListById(playListId); //playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
-        //todo
-        //exception out of bound :////
 
         Music[] temp = new Music[playList.getPlaylist().size()];
         int i = 0;

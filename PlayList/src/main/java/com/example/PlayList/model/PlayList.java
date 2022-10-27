@@ -34,6 +34,7 @@ public class PlayList {
         Node t = playlist.getHeader().getNext();
         while (t != playlist.getTrailer()) {
             musics.add(t.getData());
+            t = t.getNext();
         }
 
         return musics;
@@ -46,6 +47,8 @@ public class PlayList {
         {
             if(t.getData().getId() == music.getId())
                 playlist.remove(t);
+
+            t = t.getNext();
         }
     }
     public void clearPlayList() {
