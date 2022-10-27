@@ -1,5 +1,6 @@
 package com.example.PlayList.model;
 
+import com.example.PlayList.model.response.PlayListResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,17 +40,16 @@ public class PlayList {
         return musics;
     }
 
-    public void removeMusic(Music music)
-    {
+    public void removeMusic(Music music) {
         Node t = playlist.getHeader().getNext();
-        while(t != playlist.getTrailer())
-        {
-            if(t.getData().getId() == music.getId())
+        while (t != playlist.getTrailer()) {
+            if (t.getData().getId() == music.getId())
                 playlist.remove(t);
 
             t = t.getNext();
         }
     }
+
     public void clearPlayList() {
 
         LinkedList newPlayList = new LinkedList();
@@ -58,4 +57,12 @@ public class PlayList {
         this.setSize(0);
     }
 
+    public PlayListResponse response() {
+        return PlayListResponse.builder()
+                .id(id)
+                .name(name)
+                .size(size)
+                .musics(musicsList())
+                .build();
+    }
 }

@@ -2,6 +2,7 @@ package com.example.PlayList.controller;
 
 import com.example.PlayList.model.Music;
 import com.example.PlayList.model.PlayList;
+import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.service.PlayListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class PlayListController {
     private PlayListService playListService;
 
     @PostMapping("/new")
-    public ResponseEntity<PlayList> createPlayList(@RequestBody PlayList playList) {
+    public ResponseEntity<PlayListResponse> createPlayList(@RequestBody PlayList playList) {
         try {
             return new ResponseEntity<>(playListService.createPlayList(playList), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -28,7 +29,7 @@ public class PlayListController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayList> getPlayListById(@PathVariable long id) {
+    public ResponseEntity<PlayListResponse> getPlayListById(@PathVariable long id) {
         try {
             return new ResponseEntity<>(playListService.getPlayListById(id), HttpStatus.OK);
         } catch (Exception e) {
@@ -38,12 +39,12 @@ public class PlayListController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PlayList>> getAllPlayList() {
+    public ResponseEntity<List<PlayListResponse>> getAllPlayList() {
         return new ResponseEntity<>(playListService.getAllPlayList(), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<PlayList> updatePlayList(@PathVariable long id, @RequestBody PlayList playList) {
+    public ResponseEntity<PlayListResponse> updatePlayList(@PathVariable long id, @RequestBody PlayList playList) {
         return new ResponseEntity<>(playListService.updatePlayList(id, playList), HttpStatus.OK);
     }
 
@@ -54,7 +55,7 @@ public class PlayListController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<PlayList> getPlayListByName(@PathVariable String name) {
+    public ResponseEntity<PlayListResponse> getPlayListByName(@PathVariable String name) {
         return new ResponseEntity<>(playListService.getPlayListByName(name), HttpStatus.OK);
     }
 
@@ -66,7 +67,7 @@ public class PlayListController {
     // methods ---------------------------------------------------------------------
 
     @PostMapping("/add/{id}/{musicId}")
-    public ResponseEntity<PlayList> addMusicToPlayList(@PathVariable long id, @PathVariable long musicId) {
+    public ResponseEntity<PlayListResponse> addMusicToPlayList(@PathVariable long id, @PathVariable long musicId) {
         try {
             return new ResponseEntity<>(playListService.addMusicToPlayList(id, musicId), HttpStatus.OK);
         } catch (Exception e) {
@@ -75,7 +76,7 @@ public class PlayListController {
     }
 
     @DeleteMapping("/remove/{id}/{musicId}")
-    public ResponseEntity<PlayList> removeMusicFromPlayList(@PathVariable long id, @PathVariable long musicId) {
+    public ResponseEntity<PlayListResponse> removeMusicFromPlayList(@PathVariable long id, @PathVariable long musicId) {
         try {
             return new ResponseEntity<>(playListService.removeMusicFromPlayList(id, musicId), HttpStatus.OK);
         } catch (Exception e) {

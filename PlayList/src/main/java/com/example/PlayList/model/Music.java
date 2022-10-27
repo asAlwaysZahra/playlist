@@ -1,5 +1,6 @@
 package com.example.PlayList.model;
 
+import com.example.PlayList.model.response.MusicResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,5 +25,16 @@ public class Music {
     private String genre;
     private int len;
     private String topic;
+
+    public MusicResponse response() {
+        return MusicResponse.builder()
+                .artistName(artistName)
+                .trackName(trackName)
+                .releaseDate(releaseDate)
+                .genre(genre)
+                .len(len)
+                .topic(topic)
+                .build();
+    }
 }
 
