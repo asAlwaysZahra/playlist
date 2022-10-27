@@ -2,8 +2,10 @@ package com.example.PlayList.controller;
 
 import com.example.PlayList.model.Music;
 import com.example.PlayList.model.PlayList;
+import com.example.PlayList.model.response.MusicResponse;
 import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.service.PlayListService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/playlists")
 public class PlayListController {
 
-    @Autowired
     private PlayListService playListService;
 
     @PostMapping("/new")
@@ -86,7 +88,7 @@ public class PlayListController {
     }
 
     @GetMapping("/shuffle/{id}")
-    public ResponseEntity<List<Music>> shufflePlayList(@PathVariable long id) {
+    public ResponseEntity<List<MusicResponse>> shufflePlayList(@PathVariable long id) {
         try {
             return new ResponseEntity<>(playListService.shufflePlayList(id), HttpStatus.OK);
         } catch (Exception e) {
@@ -106,9 +108,39 @@ public class PlayListController {
     }
 
     @PostMapping("/merge/shuffle/{id1}/{id2}/{name}")
-    public ResponseEntity<List<Music>> mergeShufflePlayList(@PathVariable long id1, @PathVariable long id2, @PathVariable String name) {
+    public ResponseEntity<List<MusicResponse>> mergeShufflePlayList(@PathVariable long id1, @PathVariable long id2, @PathVariable String name) {
         try {
             return new ResponseEntity<>(playListService.shuffleMergePlayList(id1, id2, name), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/like/{musicId}")
+    public ResponseEntity<PlayListResponse> like(@PathVariable long musicId) {
+        try {
+            return new ResponseEntity<>(playListService.likeMusic(musicId), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/dislike/{musicId}")
+    public ResponseEntity<PlayListResponse> dislike(@PathVariable long musicId) {
+        try {
+            return new ResponseEntity<>(playListService.dislikeMusic(musicId), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/likedSongs")
+    public ResponseEntity<PlayListResponse> likedMusics() {
+        try {
+            return new ResponseEntity<>(playListService.getLikedMusics(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
