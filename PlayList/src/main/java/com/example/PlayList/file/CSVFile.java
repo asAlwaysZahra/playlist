@@ -1,6 +1,7 @@
 package com.example.PlayList.file;
 
 import com.example.PlayList.model.Music;
+import com.example.PlayList.model.request.MusicRequest;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.Getter;
@@ -12,12 +13,12 @@ import java.util.List;
 @Getter
 public class CSVFile {
 
-    static public ArrayList<Music> readCSV(String fileName) {
+    static public ArrayList<MusicRequest> readCSV(String fileName) {
 
         try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
             List<com.example.PlayList.file.Music> beans = new CsvToBeanBuilder(new FileReader(fileName)).withType(com.example.PlayList.file.Music.class).build().parse();
 
-            ArrayList<Music> musics = new ArrayList<>();
+            ArrayList<MusicRequest> musics = new ArrayList<>();
 
             int i = 0;
             for (com.example.PlayList.file.Music t : beans) {
@@ -25,8 +26,7 @@ public class CSVFile {
                     i++;
                     continue;
                 }
-                musics.add(Music.builder()
-                        .id(i++)
+                musics.add(MusicRequest.builder()
                         .artistName(t.getArtistName())
                         .trackName(t.getTrackName())
                         .releaseDate(Integer.parseInt(t.getReleaseDate()))
@@ -34,7 +34,6 @@ public class CSVFile {
                         .len(Integer.parseInt(t.getLen()))
                         .topic(t.getTopic())
                         .build());
-//                new Music(i++ - 1, t.getArtistName(), t.getTrackName(), Integer.parseInt(t.getReleaseDate()), t.getGenre(), Integer.parseInt(t.getLen()), t.getTopic());
             }
 
             return musics;

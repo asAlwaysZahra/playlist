@@ -1,10 +1,8 @@
 package com.example.PlayList.model;
 
+import com.example.PlayList.model.request.PlayListRequest;
 import com.example.PlayList.model.response.PlayListResponse;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 public class PlayList {
 
     @Id
@@ -64,5 +63,12 @@ public class PlayList {
                 .size(size)
                 .musics(musicsList())
                 .build();
+    }
+
+    public PlayListRequest request() {
+        return PlayListRequest.builder()
+                .name(name)
+                .size(size).
+                build();
     }
 }

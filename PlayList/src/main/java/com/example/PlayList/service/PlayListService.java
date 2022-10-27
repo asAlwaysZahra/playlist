@@ -1,6 +1,7 @@
 package com.example.PlayList.service;
 
 import com.example.PlayList.model.*;
+import com.example.PlayList.model.request.PlayListRequest;
 import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.reposirory.MusicRepository;
 import com.example.PlayList.reposirory.PlayListRepository;
@@ -32,8 +33,12 @@ public class PlayListService {
         return playlist_musicRepo.getMusics(id);
     }
 
-    public PlayListResponse createPlayList(PlayList playList) {
-        playList.setId(generateId());
+    public PlayListResponse createPlayList(PlayListRequest playListRequest) {
+        PlayList playList = PlayList.builder()
+                .id(generateId())
+                .name(playListRequest.getName())
+                .size(playListRequest.getSize())
+                .build();
         return playListRepository.save(playList).response();
     }
 
@@ -63,10 +68,10 @@ public class PlayListService {
         return playList;
     }
 
-    public PlayListResponse updatePlayList(long id, PlayList playList) {
-        PlayList p = playListRepository.findById(id).orElseThrow(() -> new RuntimeException("PlayList not found"));
+    public PlayListResponse updatePlayList(long id, PlayListRequest playListRequest) {
+        PlayList playList = playListRepository.findById(id).orElseThrow(() -> new RuntimeException("PlayList not found"));
 
-        p.setName(playList.getName());
+        if(playListRequest.getName() != null) playList.setName(playListRequest.getName());
 
         return playListRepository.save(playList).response();
     }
@@ -111,7 +116,7 @@ public class PlayListService {
         playList.removeMusic(music);
 
         playList.setSize(playList.getSize() - 1);
-        updatePlayList(playListId, playList);
+        updatePlayList(playListId, playList.request());
 
         return playList.response();
     }
