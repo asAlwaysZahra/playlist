@@ -1,7 +1,7 @@
 package com.example.PlayList.service;
 
 import com.example.PlayList.model.*;
-import com.example.PlayList.model.request.PlayListRequest;
+import com.example.PlayList.service.*;
 import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.reposirory.MusicRepository;
 import com.example.PlayList.reposirory.PlayListRepository;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -92,8 +93,8 @@ public class PlayListService {
     // methods ---------------------------------------------------------------------
 
     public PlayListResponse addMusicToPlayList(long playListId, long musicId) {
-        // getPlayListById(playListId)  todo  ?
-        PlayList playList = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        // getPlayListById(playListId)  todo  ? playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        PlayList playList = getPlayListWithMusics(playListId);
         Music music = musicRepository.findById(musicId).orElseThrow(() -> new RuntimeException("Music not found"));
 
         Playlist_Music playlist_music = new Playlist_Music(playListId, musicId);
@@ -177,7 +178,7 @@ public class PlayListService {
 
     }
 
-    public List<Music> shufflePlayList(long playListId) {
+    public List<MusicResponse> shufflePlayList(long playListId) {
 
         PlayList playList = getPlayListWithMusics(playListId); //playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("PlayList not found"));
 
@@ -198,14 +199,30 @@ public class PlayListService {
             playList.getPlaylist().addLast(music);
         }
 
-        return playList.musicsList();
+        return playList.musicsList().stream().map(Music::response).collect(Collectors.toList());
     }
 
-    public List<Music> shuffleMergePlayList(long playListId1, long playListId2, String newName) {
+    public List<MusicResponse> shuffleMergePlayList(long playListId1, long playListId2, String newName) {
 
         List<Music> shuffleMergePlayList = mergedPlayList(playListId1, playListId2, newName);
         Collections.shuffle(shuffleMergePlayList);
 
-        return shuffleMergePlayList;
+        return shuffleMergePlayList.stream().map(Music::response).collect(Collectors.toList());
+    }
+
+    public PlayListResponse getLikedMusics() {
+        Optional<PlayList> playList = playListRepository.findById(0L);
+        if (playList.isEmpty())
+            return playListRepository.save(new PlayList(0L, new LinkedList(), 0, "Liked Songs")).response();
+        else
+            return getPlayListWithMusics(0L).response();
+    }
+
+    public PlayListResponse likeMusic(long musicId) {
+        return addMusicToPlayList(0L, musicId);
+    }
+
+    public PlayListResponse dislikeMusic(long musicId) {
+        return removeMusicFromPlayList(0L, musicId);
     }
 }
