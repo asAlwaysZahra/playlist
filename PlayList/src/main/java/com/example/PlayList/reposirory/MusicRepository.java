@@ -23,12 +23,12 @@ public interface MusicRepository extends CrudRepository<Music, Long> {
 
     List<Music> findAllByTopicContaining(String topic);
 
-    List<Music> findAllByReleaseDate(int year); // todo date between
+    List<Music> findAllByReleaseDate(int year);
 
     List<Music> findAllByLen(int len);
 
     // sort -----------------------------------------------------------------------
-    List<Music> findByOrderByArtistNameAsc(); // todo find all ?
+    List<Music> findByOrderByArtistNameAsc();
 
     List<Music> findByOrderByArtistNameDesc();
 

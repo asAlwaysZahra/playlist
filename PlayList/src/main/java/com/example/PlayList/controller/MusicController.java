@@ -52,7 +52,7 @@ public class MusicController {
 
     @PostMapping("/readCSV")
     public ResponseEntity<List<MusicResponse>> readCSV() {
-        List<MusicRequest> musicList = CSVFile.readCSV("/media/influx/Programming/University/Fall01/DS/Codes/Projects/project-2-asAlwaysZahra/PlayList/src/main/resources/musics.csv");
+        List<MusicRequest> musicList = CSVFile.readCSV("src/main/resources/musics.csv");
         return new ResponseEntity<>(musicService.saveAll(musicList), HttpStatus.CREATED);
     }
 

@@ -65,6 +65,14 @@ public class PlayList {
                 .build();
     }
 
+    public PlayListResponse createResponse() {
+        return PlayListResponse.builder()
+                .id(id)
+                .name(name)
+                .size(size)
+                .build();
+    }
+
     public PlayListRequest request() {
         return PlayListRequest.builder()
                 .name(name)

@@ -1,10 +1,9 @@
 package com.example.PlayList.service;
 
 import com.example.PlayList.model.*;
-import com.example.PlayList.service.*;
-import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.model.request.PlayListRequest;
 import com.example.PlayList.model.response.MusicResponse;
+import com.example.PlayList.model.response.PlayListResponse;
 import com.example.PlayList.reposirory.MusicRepository;
 import com.example.PlayList.reposirory.PlayListRepository;
 import com.example.PlayList.reposirory.Playlist_MusicRepo;
@@ -41,8 +40,9 @@ public class PlayListService {
                 .id(generateId())
                 .name(playListRequest.getName())
                 .size(playListRequest.getSize())
+                .playlist(new LinkedList())
                 .build();
-        return playListRepository.save(playList).response();
+        return playListRepository.save(playList).createResponse();
     }
 
     public PlayListResponse getPlayListById(long id) {
@@ -72,24 +72,33 @@ public class PlayListService {
     }
 
     public PlayListResponse updatePlayList(long id, PlayListRequest playListRequest) {
-        PlayList playList = playListRepository.findById(id).orElseThrow(() -> new RuntimeException("PlayList not found"));
+        PlayList playList = getPlayListWithMusics(id);
 
-        if(playListRequest.getName() != null) playList.setName(playListRequest.getName());
+        if (playListRequest.getName() != null) playList.setName(playListRequest.getName());
 
         return playListRepository.save(playList).response();
     }
 
     public void deletePlayList(long id) {
+        PlayList playList = getPlayListWithMusics(id);
+        for (Music music : playlist_musicRepo.getMusics(id))
+            removeMusicFromPlayList(playList.getId(), music.getId());
+
         playListRepository.deleteById(id);
     }
 
     public List<PlayListResponse> getAllPlayList() {
+
         List<PlayList> playLists = (List<PlayList>) playListRepository.findAll();
+        for (PlayList playList : playLists)
+            playLists.add(getPlayListWithMusics(playList.getId()));
+
         return playLists.stream().map(PlayList::response).collect(Collectors.toList());
     }
 
     public PlayListResponse getPlayListByName(String name) {
-        return playListRepository.findByName(name).response();
+        PlayList playList = playListRepository.findByName(name);
+        return getPlayListById(playList.getId());
     }
 
     // methods ---------------------------------------------------------------------
